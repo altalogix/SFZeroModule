@@ -1,4 +1,4 @@
-# SFZero, the Juce module version
+# SFZero, the Juce module version (module only)
 
 This is a fork of the [original SFZero by Steve Folta](https://github.com/stevefolta/SFZero), with the following changes:
 
