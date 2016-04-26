@@ -13,9 +13,11 @@ For more information, please see also this [blog article](http://www.mucoder.net
 
 Please note that, in order to build, SFZero requires [Juce](http://www.juce.com).
 
-Before building the plugin, it's necessary to
+Before building the sample plugin, it's necessary to
 
-* copy the modules/SFZero folder as a childfolder to your Juce modules folder.
+* get the sample plugin source code from [https://github.com/altalogix/SFZero](https://github.com/altalogix/SFZero)
+* get the module source code from [https://github.com/altalogix/SFZeroModule](https://github.com/altalogix/SFZeroModule)
+* copy the SFZeroModule folder as a childfolder to your Juce modules folder.
 * load `plugin/SFZero.jucer` into your IntroJucer tool and save the project again. This should regenerate the project build definitions with the proper links to your Juce module location.
 
 You can find this fork's source code at: [https://github.com/altalogix/SFZero](https://github.com/altalogix/SFZero)
