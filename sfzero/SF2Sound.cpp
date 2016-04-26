@@ -105,12 +105,12 @@ int sfzero::SF2Sound::selectedSubsound() { return selectedPreset_; }
 
 sfzero::Sample *sfzero::SF2Sound::sampleFor(double sampleRate)
 {
-  sfzero::Sample *sample = samplesByRate_[(int)sampleRate];
+  sfzero::Sample *sample = samplesByRate_[static_cast<int>(sampleRate)];
 
   if (sample == nullptr)
   {
     sample = new sfzero::Sample(sampleRate);
-    samplesByRate_.set((int)sampleRate, sample);
+    samplesByRate_.set(static_cast<int>(sampleRate), sample);
   }
   return sample;
 }
