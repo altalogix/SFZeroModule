@@ -9,6 +9,8 @@
 #include "SF2.h"
 #include "SF2Generator.h"
 #include "SF2Sound.h"
+#include "SFZDebug.h"
+#include "SFZSample.h"
 
 sfzero::SF2Reader::SF2Reader(sfzero::SF2Sound *soundIn, const juce::File &fileIn) : sound_(soundIn)
 {
@@ -253,16 +255,16 @@ juce::AudioSampleBuffer *sfzero::SF2Reader::readSamples(double *progressVar, juc
 
     if (progressVar)
     {
-      *progressVar = static_cast<float>(numSamples - samplesLeft) / numSamples;
+      *progressVar = (float)(numSamples - samplesLeft) / numSamples;
     }
     if (thread && thread->threadShouldExit())
     {
-      delete[] buffer;
+      delete buffer;
       delete sampleBuffer;
       return nullptr;
     }
   }
-  delete[] buffer;
+  delete buffer;
 
   if (progressVar)
   {
@@ -374,7 +376,7 @@ void sfzero::SF2Reader::addGeneratorToRegion(sfzero::word genOper, sfzero::SF2::
 
   case sfzero::SF2Generator::exclusiveClass:
     region->off_by = amount->wordAmount;
-    region->group = static_cast<int>(region->off_by);
+    region->group = (int)region->off_by;
     break;
 
   case sfzero::SF2Generator::overridingRootKey:
@@ -424,7 +426,7 @@ void sfzero::SF2Reader::addGeneratorToRegion(sfzero::word genOper, sfzero::SF2::
   case sfzero::SF2Generator::reserved3:
   case sfzero::SF2Generator::unused5:
   {
-    const sfzero::SF2Generator *generator = sfzero::GeneratorFor(static_cast<int>(genOper));
+    const sfzero::SF2Generator *generator = sfzero::GeneratorFor((int)genOper);
     sound_->addUnsupportedOpcode(generator->name);
   }
   break;

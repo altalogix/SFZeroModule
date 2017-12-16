@@ -13,14 +13,21 @@
 
 static const float globalGain = -1.0;
 
-sfzero::Voice::Voice()
+sfzero::Voice::Voice(juce::AudioFormatManager *formatManager, SFZCleaner* cleaner)
     : region_(nullptr), trigger_(0), curMidiNote_(0), curPitchWheel_(0), pitchRatio_(0), noteGainLeft_(0), noteGainRight_(0),
-      sourceSamplePosition_(0), sampleEnd_(0), loopStart_(0), loopEnd_(0), numLoops_(0), curVelocity_(0)
+      sourceSamplePosition_(0), sampleEnd_(0), loopStart_(0), loopEnd_(0), numLoops_(0), curVelocity_(0), streamer_(nullptr)
 {
   ampeg_.setExponentialDecay(true);
+  formatManager_=formatManager;
+  threadCleaner = cleaner;
 }
 
-sfzero::Voice::~Voice() {}
+sfzero::Voice::~Voice() {
+    if(streamer_){
+      streamer_->stopThread(2000);
+      delete streamer_;
+    }
+}
 
 bool sfzero::Voice::canPlaySound(juce::SynthesiserSound *sound) { return dynamic_cast<sfzero::Sound *>(sound) != nullptr; }
 
@@ -110,6 +117,15 @@ void sfzero::Voice::startNote(int midiNoteNumber, float floatVelocity, juce::Syn
     }
   }
   numLoops_ = 0;
+  
+  // init disk streaming
+  if(streamer_){
+    if(!streamer_->isThreadRunning())
+      delete streamer_; // for now abandon thread if it's still running - aim to pass this to a garbage collector
+    else
+      threadCleaner->addThread(streamer_);
+    streamer_=nullptr;
+  }
 }
 
 void sfzero::Voice::stopNote(float /*velocity*/, bool allowTailOff)
@@ -164,6 +180,7 @@ void sfzero::Voice::renderNextBlock(juce::AudioSampleBuffer &outputBuffer, int s
   }
 
   juce::AudioSampleBuffer *buffer = region_->sample->getBuffer();
+  double sourceSamplePosition = this->sourceSamplePosition_;
   const float *inL = buffer->getReadPointer(0, 0);
   const float *inR = buffer->getNumChannels() > 1 ? buffer->getReadPointer(1, 0) : nullptr;
 
@@ -174,7 +191,6 @@ void sfzero::Voice::renderNextBlock(juce::AudioSampleBuffer &outputBuffer, int s
 
   // Cache some values, to give them at least some chance of ending up in
   // registers.
-  double sourceSamplePosition = this->sourceSamplePosition_;
   float ampegGain = ampeg_.getLevel();
   float ampegSlope = ampeg_.getSlope();
   int samplesUntilNextAmpSegment = ampeg_.getSamplesUntilNextSegment();
@@ -186,6 +202,21 @@ void sfzero::Voice::renderNextBlock(juce::AudioSampleBuffer &outputBuffer, int s
   while (--numSamples >= 0)
   {
     int pos = static_cast<int>(sourceSamplePosition);
+    // switch to streaming buffer
+    if(streamer_){
+      if(region_->sample->CanStream() && buffer != streamer_->GetVoiceBuffer() && pos>=sfzero::Sample::preBufferSize){
+        buffer = streamer_->GetVoiceBuffer();
+        bufferNumSamples = buffer->getNumSamples();
+        //std::cout << "switch to stream buffer " << bufferNumSamples << "\n";
+        inL = buffer->getReadPointer(0, 0);
+        inR = buffer->getNumChannels() > 1 ? buffer->getReadPointer(1, 0) : nullptr;
+      }
+      if(buffer == streamer_->GetVoiceBuffer() && pos>=streamer_->getNumSamplesFilled()-2){
+        killNote();
+        std::cout << "kill streamed note - buffer not ready 2\n";
+        break;
+      }
+    }
     jassert(pos >= 0 && pos < bufferNumSamples); // leoo
     float alpha = static_cast<float>(sourceSamplePosition - pos);
     float invAlpha = 1.0f - alpha;
@@ -252,6 +283,19 @@ void sfzero::Voice::renderNextBlock(juce::AudioSampleBuffer &outputBuffer, int s
     {
       killNote();
       break;
+    }
+  }
+  
+  // stream
+  if(region_!=nullptr){
+    if(region_->sample->CanStream() && sampleEnd_>sfzero::Sample::preBufferSize){
+      if(streamer_==nullptr && sourceSamplePosition>sfzero::Sample::preBufferSize/2){
+        streamer_=new SFZDiskStreamer("SFZStreamer", region_->sample->getFile(), formatManager_, region_->sample->getBuffer()->getNumChannels(), static_cast<int>(sampleEnd_), sfzero::Sample::preBufferSize);
+        streamer_ -> copyBuffer(buffer);
+      }
+      if(streamer_!=nullptr){
+        streamer_->setCurrentSample(sourceSamplePosition, sfzero::Sample::preBufferSize);
+      }
     }
   }
 

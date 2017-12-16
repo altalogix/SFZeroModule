@@ -15,7 +15,7 @@ namespace sfzero
 class SF2Sound : public Sound
 {
 public:
-  explicit SF2Sound(const juce::File &file);
+  SF2Sound(const juce::File &file);
   virtual ~SF2Sound();
 
   void loadRegions() override;

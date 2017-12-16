@@ -8,6 +8,8 @@
 #define SFZVOICE_H_INCLUDED
 
 #include "SFZEG.h"
+#include "SFZDiskStreamer.h"
+#include "SFZCleaner.h"
 
 namespace sfzero
 {
@@ -16,7 +18,7 @@ struct Region;
 class Voice : public juce::SynthesiserVoice
 {
 public:
-  Voice();
+  Voice(juce::AudioFormatManager *formatManager, SFZCleaner* cleaner);
   virtual ~Voice();
 
   bool canPlaySound(juce::SynthesiserSound *sound) override;
@@ -48,7 +50,9 @@ private:
   EG ampeg_;
   juce::int64 sampleEnd_;
   juce::int64 loopStart_, loopEnd_;
-
+  juce::AudioFormatManager *formatManager_;
+  SFZDiskStreamer *streamer_;
+  
   // Info only.
   int numLoops_;
   int curVelocity_;
@@ -56,6 +60,7 @@ private:
   void calcPitchRatio();
   void killNote();
   double fractionalMidiNoteInHz(double note, double freqOfA = 440.0);
+  SFZCleaner* threadCleaner;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Voice)
 };

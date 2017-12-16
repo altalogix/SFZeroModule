@@ -546,11 +546,11 @@ int sfzero::Reader::triggerValue(const juce::String &str)
   {
     return sfzero::Region::release;
   }
-  if (str == "first")
+  else if (str == "first")
   {
     return sfzero::Region::first;
   }
-  if (str == "legato")
+  else if (str == "legato")
   {
     return sfzero::Region::legato;
   }
@@ -563,15 +563,15 @@ int sfzero::Reader::loopModeValue(const juce::String &str)
   {
     return sfzero::Region::no_loop;
   }
-  if (str == "one_shot")
+  else if (str == "one_shot")
   {
     return sfzero::Region::one_shot;
   }
-  if (str == "loop_continuous")
+  else if (str == "loop_continuous")
   {
     return sfzero::Region::loop_continuous;
   }
-  if (str == "loop_sustain")
+  else if (str == "loop_sustain")
   {
     return sfzero::Region::loop_sustain;
   }

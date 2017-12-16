@@ -16,3 +16,5 @@
 #include "sfzero/SFZSound.cpp" 
 #include "sfzero/SFZSynth.cpp" 
 #include "sfzero/SFZVoice.cpp" 
+#include "sfzero/SFZDiskStreamer.cpp"
+#include "sfzero/SFZCleaner.cpp"

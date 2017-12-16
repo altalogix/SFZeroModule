@@ -8,7 +8,14 @@
 #include "SFZSound.h"
 #include "SFZVoice.h"
 
-sfzero::Synth::Synth() : Synthesiser() {}
+sfzero::Synth::Synth() : Synthesiser() {
+  threadCleaner = new SFZCleaner("Cleaner");
+  threadCleaner->startThread(5);
+}
+
+sfzero::Synth::~Synth(){
+  delete threadCleaner;
+}
 
 void sfzero::Synth::noteOn(int midiChannel, int midiNoteNumber, float velocity)
 {

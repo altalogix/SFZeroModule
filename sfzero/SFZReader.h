@@ -18,7 +18,7 @@ class Sound;
 class Reader
 {
 public:
-  explicit Reader(Sound *sound);
+  Reader(Sound *sound);
   ~Reader();
 
   void read(const juce::File &file);
