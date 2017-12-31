@@ -15,7 +15,7 @@ static const float globalGain = -1.0;
 
 sfzero::Voice::Voice(juce::AudioFormatManager *formatManager, SFZCleaner* cleaner)
     : region_(nullptr), trigger_(0), curMidiNote_(0), curPitchWheel_(0), pitchRatio_(0), noteGainLeft_(0), noteGainRight_(0),
-      sourceSamplePosition_(0), sampleEnd_(0), loopStart_(0), loopEnd_(0), numLoops_(0), curVelocity_(0), streamer_(nullptr)
+      sourceSamplePosition_(0), sampleEnd_(0), loopStart_(0), loopEnd_(0), numLoops_(0), curVelocity_(0), streamer_(nullptr), midiVolume_(127)
 {
   ampeg_.setExponentialDecay(true);
   formatManager_=formatManager;
@@ -171,7 +171,15 @@ void sfzero::Voice::pitchWheelMoved(int newValue)
   calcPitchRatio();
 }
 
-void sfzero::Voice::controllerMoved(int /*controllerNumber*/, int /*newValue*/) { /***/}
+void sfzero::Voice::controllerMoved(int controllerNumber, int newValue)
+{
+  switch(controllerNumber){
+    case 7:
+      setMidiVolume(newValue);
+      break;
+  }
+}
+
 void sfzero::Voice::renderNextBlock(juce::AudioSampleBuffer &outputBuffer, int startSample, int numSamples)
 {
   if (region_ == nullptr)
@@ -198,6 +206,8 @@ void sfzero::Voice::renderNextBlock(juce::AudioSampleBuffer &outputBuffer, int s
   float loopStart = static_cast<float>(this->loopStart_);
   float loopEnd = static_cast<float>(this->loopEnd_);
   float sampleEnd = static_cast<float>(this->sampleEnd_);
+  float midiVolumeGainDB = -20.0 * log10((127.0 * 127.0) / (midiVolume_ * midiVolume_));
+  float midiVolumeGain = static_cast<float>(juce::Decibels::decibelsToGain(midiVolumeGainDB));
 
   while (--numSamples >= 0)
   {
@@ -236,8 +246,8 @@ void sfzero::Voice::renderNextBlock(juce::AudioSampleBuffer &outputBuffer, int s
     // float l = (inL[pos] * invAlpha + inL[nextPos] * alpha);
     // float r = inR ? (inR[pos] * invAlpha + inR[nextPos] * alpha) : l;
 
-    float gainLeft = noteGainLeft_ * ampegGain;
-    float gainRight = noteGainRight_ * ampegGain;
+    float gainLeft = noteGainLeft_  * ampegGain * midiVolumeGain;
+    float gainRight = noteGainRight_ * ampegGain * midiVolumeGain;
     l *= gainLeft;
     r *= gainRight;
     // Shouldn't we dither here?
@@ -370,4 +380,9 @@ double sfzero::Voice::fractionalMidiNoteInHz(double note, double freqOfA)
   note -= 69;
   // Now 0 = A
   return freqOfA * pow(2.0, note / 12.0);
+}
+
+void sfzero::Voice::setMidiVolume(int volume)
+{
+  midiVolume_=volume;
 }

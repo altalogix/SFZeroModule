@@ -31,6 +31,7 @@ public:
   void renderNextBlock(juce::AudioSampleBuffer &outputBuffer, int startSample, int numSamples) override;
   bool isPlayingNoteDown();
   bool isPlayingOneShot();
+  void setMidiVolume(int volume);
 
   int getGroup();
   juce::uint64 getOffBy();
@@ -52,6 +53,7 @@ private:
   juce::int64 loopStart_, loopEnd_;
   juce::AudioFormatManager *formatManager_;
   SFZDiskStreamer *streamer_;
+  int midiVolume_;
   
   // Info only.
   int numLoops_;
