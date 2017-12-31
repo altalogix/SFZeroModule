@@ -15,8 +15,8 @@ namespace sfzero
 class Sample
 {
 public:
-  explicit Sample(const juce::File &fileIn) : file_(fileIn), buffer_(nullptr), sampleRate_(0), sampleLength_(0), loopStart_(0), loopEnd_(0) {}
-  explicit Sample(double sampleRateIn) : buffer_(nullptr), sampleRate_(sampleRateIn), sampleLength_(0), loopStart_(0), loopEnd_(0) {}
+  explicit Sample(const juce::File &fileIn) : file_(fileIn), buffer_(nullptr), sampleRate_(0), sampleLength_(0), loopStart_(0), loopEnd_(0), doStream_(false){}
+  explicit Sample(double sampleRateIn) : buffer_(nullptr), sampleRate_(sampleRateIn), sampleLength_(0), loopStart_(0), loopEnd_(0), doStream_(false) {}
   virtual ~Sample();
 
   bool load(juce::AudioFormatManager *formatManager);
@@ -31,7 +31,9 @@ public:
   juce::uint64 getSampleLength() const { return sampleLength_; }
   juce::uint64 getLoopStart() const { return loopStart_; }
   juce::uint64 getLoopEnd() const { return loopEnd_; }
-
+  bool CanStream() const { return doStream_; }
+  static const int preBufferSize=44100;
+ 
 #ifdef JUCE_DEBUG
   void checkIfZeroed(const char *where);
 
@@ -42,6 +44,7 @@ private:
   juce::AudioSampleBuffer *buffer_;
   double sampleRate_;
   juce::uint64 sampleLength_, loopStart_, loopEnd_;
+  bool doStream_;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Sample)
 };

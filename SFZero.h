@@ -29,6 +29,8 @@ END_JUCE_MODULE_DECLARATION
 #include "sfzero/SFZSound.h"
 #include "sfzero/SFZSynth.h"
 #include "sfzero/SFZVoice.h"
+#include "sfzero/SFZDiskStreamer.h"
+#include "sfzero/SFZCleaner.h"
 
 
 #endif   // INCLUDED_SFZERO_H

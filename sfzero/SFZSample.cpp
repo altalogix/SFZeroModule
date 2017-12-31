@@ -21,8 +21,8 @@ bool sfzero::Sample::load(juce::AudioFormatManager *formatManager)
   // can be done without having to check for the edge all the time.
   jassert(sampleLength_ < std::numeric_limits<int>::max());
 
-  buffer_ = new juce::AudioSampleBuffer(reader->numChannels, static_cast<int>(sampleLength_ + 4));
-  reader->read(buffer_, 0, static_cast<int>(sampleLength_ + 4), 0, true, true);
+  buffer_ = new juce::AudioSampleBuffer(reader->numChannels, static_cast<int>(preBufferSize));
+  reader->read(buffer_, 0, static_cast<int>(preBufferSize), 0, true, true);
 
   juce::StringPairArray *metadata = &reader->metadataValues;
   int numLoops = metadata->getValue("NumSampleLoops", "0").getIntValue();
@@ -31,6 +31,7 @@ bool sfzero::Sample::load(juce::AudioFormatManager *formatManager)
     loopStart_ = metadata->getValue("Loop0Start", "0").getLargeIntValue();
     loopEnd_ = metadata->getValue("Loop0End", "0").getLargeIntValue();
   }
+  doStream_=true;
   delete reader;
   return true;
 }

@@ -8,7 +8,16 @@
 #include "SFZSound.h"
 #include "SFZVoice.h"
 
-sfzero::Synth::Synth() : Synthesiser() {}
+sfzero::Synth::Synth() : Synthesiser() {
+  threadCleaner = new SFZCleaner("Cleaner");
+  threadCleaner->startThread(5);
+  for(int i=0; i<16; i++)
+    midiVolume_[i] = 127;
+}
+
+sfzero::Synth::~Synth(){
+  delete threadCleaner;
+}
 
 void sfzero::Synth::noteOn(int midiChannel, int midiNoteNumber, float velocity)
 {
@@ -91,6 +100,7 @@ void sfzero::Synth::noteOn(int midiChannel, int midiNoteNumber, float velocity)
         if (voice)
         {
           voice->setRegion(region);
+          voice->setMidiVolume(midiVolume_[midiChannel-1]);
           startVoice(voice, sound, midiChannel, midiNoteNumber, velocity);
         }
       }
@@ -123,6 +133,16 @@ void sfzero::Synth::noteOff(int midiChannel, int midiNoteNumber, float velocity,
       }
     }
   }
+}
+
+void sfzero::Synth::handleController (int midiChannel, int controllerNumber, int controllerValue)
+{
+  switch(controllerNumber){
+    case 7:
+      midiVolume_[midiChannel-1] = controllerValue;
+      break;
+  }
+  Synthesiser::handleController (midiChannel, controllerNumber, controllerValue);
 }
 
 int sfzero::Synth::numVoicesUsed()

@@ -9,6 +9,8 @@
 #include "SF2.h"
 #include "SF2Generator.h"
 #include "SF2Sound.h"
+#include "SFZDebug.h"
+#include "SFZSample.h"
 
 sfzero::SF2Reader::SF2Reader(sfzero::SF2Sound *soundIn, const juce::File &fileIn) : sound_(soundIn)
 {
