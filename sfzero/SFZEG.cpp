@@ -77,7 +77,7 @@ void sfzero::EG::noteOff() { startRelease(); }
 void sfzero::EG::fastRelease()
 {
   segment_ = Release;
-  samplesUntilNextSegment_ = (int)(fastReleaseTime * sampleRate_);
+  samplesUntilNextSegment_ = static_cast<int>(fastReleaseTime * sampleRate_);
   slope_ = -level_ / samplesUntilNextSegment_;
   segmentIsExponential_ = false;
 }
@@ -93,7 +93,7 @@ void sfzero::EG::startDelay()
     segment_ = Delay;
     level_ = 0.0;
     slope_ = 0.0;
-    samplesUntilNextSegment_ = (int)(parameters_.delay * sampleRate_);
+    samplesUntilNextSegment_ = static_cast<int>(parameters_.delay * sampleRate_);
     segmentIsExponential_ = false;
   }
 }
@@ -108,7 +108,7 @@ void sfzero::EG::startAttack()
   {
     segment_ = Attack;
     level_ = parameters_.start / 100.0f;
-    samplesUntilNextSegment_ = (int)(parameters_.attack * sampleRate_);
+    samplesUntilNextSegment_ = static_cast<int>(parameters_.attack * sampleRate_);
     slope_ = 1.0f / samplesUntilNextSegment_;
     segmentIsExponential_ = false;
   }
@@ -124,7 +124,7 @@ void sfzero::EG::startHold()
   else
   {
     segment_ = Hold;
-    samplesUntilNextSegment_ = (int)(parameters_.hold * sampleRate_);
+    samplesUntilNextSegment_ = static_cast<int>(parameters_.hold * sampleRate_);
     level_ = 1.0;
     slope_ = 0.0;
     segmentIsExponential_ = false;
@@ -140,7 +140,7 @@ void sfzero::EG::startDecay()
   else
   {
     segment_ = Decay;
-    samplesUntilNextSegment_ = (int)(parameters_.decay * sampleRate_);
+    samplesUntilNextSegment_ = static_cast<int>(parameters_.decay * sampleRate_);
     level_ = 1.0;
     if (exponentialDecay_)
     {
@@ -155,7 +155,7 @@ void sfzero::EG::startDecay()
         // get to zero, not to the sustain level.  The SFZ spec is not that
         // specific about what "decay" means, so perhaps it's really supposed
         // to specify the time to reach the sustain level.
-        samplesUntilNextSegment_ = (int)(log((parameters_.sustain / 100.0) / level_) / mysterySlope);
+        samplesUntilNextSegment_ = static_cast<int>(log((parameters_.sustain / 100.0) / level_) / mysterySlope);
         if (samplesUntilNextSegment_ <= 0)
         {
           startSustain();
@@ -197,7 +197,7 @@ void sfzero::EG::startRelease()
   }
 
   segment_ = Release;
-  samplesUntilNextSegment_ = (int)(release * sampleRate_);
+  samplesUntilNextSegment_ = static_cast<int>(release * sampleRate_);
   if (exponentialDecay_)
   {
     // I don't truly understand this; just following what LinuxSampler does.

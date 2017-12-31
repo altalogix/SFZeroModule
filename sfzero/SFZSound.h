@@ -17,7 +17,7 @@ class Sample;
 class Sound : public juce::SynthesiserSound
 {
 public:
-  Sound(const juce::File &file);
+  explicit Sound(const juce::File &file);
   virtual ~Sound();
 
   typedef juce::ReferenceCountedObjectPtr<Sound> Ptr;

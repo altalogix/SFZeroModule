@@ -15,8 +15,8 @@ namespace sfzero
 class Sample
 {
 public:
-  Sample(const juce::File &fileIn) : file_(fileIn), buffer_(nullptr), sampleRate_(0), sampleLength_(0), loopStart_(0), loopEnd_(0), doStream_(false){}
-  Sample(double sampleRateIn) : buffer_(nullptr), sampleRate_(sampleRateIn), sampleLength_(0), loopStart_(0), loopEnd_(0), doStream_(false) {}
+  explicit Sample(const juce::File &fileIn) : file_(fileIn), buffer_(nullptr), sampleRate_(0), sampleLength_(0), loopStart_(0), loopEnd_(0), doStream_(false){}
+  explicit Sample(double sampleRateIn) : buffer_(nullptr), sampleRate_(sampleRateIn), sampleLength_(0), loopStart_(0), loopEnd_(0), doStream_(false) {}
   virtual ~Sample();
 
   bool load(juce::AudioFormatManager *formatManager);
