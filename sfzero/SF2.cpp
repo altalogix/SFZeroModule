@@ -93,7 +93,7 @@ void sfzero::SF2::Hydra::readFrom(juce::InputStream *file, juce::int64 pdtaChunk
 #define HandleChunk(chunkName)                                                                                                   \
   if (FourCCEquals(chunk.id, #chunkName))                                                                                        \
   {                                                                                                                              \
-    numItems = chunk.size / SF2::chunkName::sizeInFile;                                                                          \
+    numItems = static_cast<int>(chunk.size / SF2::chunkName::sizeInFile);                                                                          \
     chunkName##NumItems = numItems;                                                                                              \
     chunkName##Items = new SF2::chunkName[numItems];                                                                             \
     for (i = 0; i < numItems; ++i)                                                                                               \

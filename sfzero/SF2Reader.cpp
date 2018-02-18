@@ -222,7 +222,7 @@ juce::AudioSampleBuffer *sfzero::SF2Reader::readSamples(double *progressVar, juc
   }
 
   // Allocate the AudioSampleBuffer.
-  int numSamples = chunk.size / sizeof(short);
+  int numSamples = static_cast<int>(chunk.size / sizeof(short));
   juce::AudioSampleBuffer *sampleBuffer = new juce::AudioSampleBuffer(1, numSamples);
 
   // Read and convert.
