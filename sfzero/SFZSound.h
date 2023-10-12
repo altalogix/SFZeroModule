@@ -2,21 +2,22 @@
  * Original code copyright (C) 2012 Steve Folta
  * Converted to Juce module (C) 2016 Leo Olivers
  * Forked from https://github.com/stevefolta/SFZero
- * For license info please see the LICENSE file distributed with this source code
+ * For license info please see the LICENSE file distributed with this source
+ *code
  *************************************************************************************/
 #ifndef SFZSOUND_H_INCLUDED
 #define SFZSOUND_H_INCLUDED
 
+#include <JuceHeader.h>
+
 #include "SFZRegion.h"
 
-namespace sfzero
-{
+namespace sfzero {
 
 class Sample;
 
-class Sound : public juce::SynthesiserSound
-{
-public:
+class Sound : public juce::SynthesiserSound {
+ public:
   explicit Sound(const juce::File &file);
   virtual ~Sound();
 
@@ -25,16 +26,19 @@ public:
   bool appliesToNote(int midiNoteNumber) override;
   bool appliesToChannel(int midiChannel) override;
 
-  void addRegion(Region *region); // Takes ownership of the region.
-  Sample *addSample(juce::String path, juce::String defaultPath = juce::String::empty);
+  void addRegion(Region *region);  // Takes ownership of the region.
+  Sample *addSample(juce::String path,
+                    juce::String defaultPath = juce::String());
   void addError(const juce::String &message);
   void addUnsupportedOpcode(const juce::String &opcode);
 
   virtual void loadRegions();
-  virtual void loadSamples(juce::AudioFormatManager *formatManager, double *progressVar = nullptr,
+  virtual void loadSamples(juce::AudioFormatManager *formatManager,
+                           double *progressVar = nullptr,
                            juce::Thread *thread = nullptr);
 
-  Region *getRegionFor(int note, int velocity, Region::Trigger trigger = Region::attack);
+  Region *getRegionFor(int note, int velocity,
+                       Region::Trigger trigger = Region::attack);
   int getNumRegions();
   Region *regionAt(int index);
 
@@ -50,7 +54,7 @@ public:
   juce::Array<Region *> &getRegions() { return regions_; }
   juce::File &getFile() { return file_; }
 
-private:
+ private:
   juce::File file_;
   juce::Array<Region *> regions_;
   juce::HashMap<juce::String, Sample *> samples_;
@@ -60,6 +64,6 @@ private:
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Sound)
 };
-}
+}  // namespace sfzero
 
-#endif // SFZSOUND_H_INCLUDED
+#endif  // SFZSOUND_H_INCLUDED
