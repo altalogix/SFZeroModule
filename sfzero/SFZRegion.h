@@ -2,40 +2,31 @@
  * Original code copyright (C) 2012 Steve Folta
  * Converted to Juce module (C) 2016 Leo Olivers
  * Forked from https://github.com/stevefolta/SFZero
- * For license info please see the LICENSE file distributed with this source code
+ * For license info please see the LICENSE file distributed with this source
+ *code
  *************************************************************************************/
 #ifndef SFZREGION_H_INCLUDED
 #define SFZREGION_H_INCLUDED
 
 #include "SFZCommon.h"
 
-namespace sfzero
-{
+namespace sfzero {
 
 class Sample;
 
 // Region is designed to be able to be bitwise-copied.
 
-struct EGParameters
-{
+struct EGParameters {
   float delay, start, attack, hold, decay, sustain, release;
 
   void clear();
   void clearMod();
 };
 
-struct Region
-{
-  enum Trigger
-  {
-    attack,
-    release,
-    first,
-    legato
-  };
+struct Region {
+  enum Trigger { attack, release, first, legato };
 
-  enum LoopMode
-  {
+  enum LoopMode {
     sample_loop,
     no_loop,
     one_shot,
@@ -43,11 +34,7 @@ struct Region
     loop_sustain
   };
 
-  enum OffMode
-  {
-    fast,
-    normal
-  };
+  enum OffMode { fast, normal };
 
   Region();
   void clear();
@@ -57,10 +44,11 @@ struct Region
   void sf2ToSFZ();
   juce::String dump();
 
-  bool matches(int note, int velocity, Trigger trig)
-  {
-    return (note >= lokey && note <= hikey && velocity >= lovel && velocity <= hivel &&
-            (trig == this->trigger || (this->trigger == attack && (trig == first || trig == legato))));
+  bool matches(int note, int velocity, Trigger trig) {
+    return (note >= lokey && note <= hikey && velocity >= lovel &&
+            velocity <= hivel &&
+            (trig == this->trigger ||
+             (this->trigger == attack && (trig == first || trig == legato))));
   }
 
   Sample *sample;
@@ -88,6 +76,6 @@ struct Region
 
   static float timecents2Secs(int timecents);
 };
-}
+}  // namespace sfzero
 
-#endif // SFZREGION_H_INCLUDED
+#endif  // SFZREGION_H_INCLUDED

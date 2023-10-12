@@ -2,7 +2,8 @@
  * Original code copyright (C) 2012 Steve Folta
  * Converted to Juce module (C) 2016 Leo Olivers
  * Forked from https://github.com/stevefolta/SFZero
- * For license info please see the LICENSE file distributed with this source code
+ * For license info please see the LICENSE file distributed with this source
+ *code
  *************************************************************************************/
 #ifndef SF2_H_INCLUDED
 #define SF2_H_INCLUDED
@@ -11,14 +12,11 @@
 
 #define SF2Field(type, name) type name;
 
-namespace sfzero
-{
+namespace sfzero {
 
-namespace SF2
-{
+namespace SF2 {
 
-struct rangesType
-{
+struct rangesType {
   byte lo, hi;
 };
 
@@ -28,86 +26,75 @@ union genAmountType {
   word wordAmount;
 };
 
-struct iver
-{
+struct iver {
 #include "sf2-chunks/iver.h"
   void readFrom(juce::InputStream *file);
 };
 
-struct phdr
-{
+struct phdr {
 #include "sf2-chunks/phdr.h"
   void readFrom(juce::InputStream *file);
 
   static const int sizeInFile = 38;
 };
 
-struct pbag
-{
+struct pbag {
 #include "sf2-chunks/pbag.h"
   void readFrom(juce::InputStream *file);
 
   static const int sizeInFile = 4;
 };
 
-struct pmod
-{
+struct pmod {
 #include "sf2-chunks/pmod.h"
   void readFrom(juce::InputStream *file);
 
   static const int sizeInFile = 10;
 };
 
-struct pgen
-{
+struct pgen {
 #include "sf2-chunks/pgen.h"
   void readFrom(juce::InputStream *file);
 
   static const int sizeInFile = 4;
 };
 
-struct inst
-{
+struct inst {
 #include "sf2-chunks/inst.h"
   void readFrom(juce::InputStream *file);
 
   static const int sizeInFile = 22;
 };
 
-struct ibag
-{
+struct ibag {
 #include "sf2-chunks/ibag.h"
   void readFrom(juce::InputStream *file);
 
   static const int sizeInFile = 4;
 };
 
-struct imod
-{
+struct imod {
 #include "sf2-chunks/imod.h"
   void readFrom(juce::InputStream *file);
 
   static const int sizeInFile = 10;
 };
 
-struct igen
-{
+struct igen {
 #include "sf2-chunks/igen.h"
   void readFrom(juce::InputStream *file);
 
   static const int sizeInFile = 4;
 };
 
-struct shdr
-{
+struct shdr {
 #include "sf2-chunks/shdr.h"
   void readFrom(juce::InputStream *file);
 
   static const int sizeInFile = 46;
 };
 
-struct Hydra
-{
+struct Hydra {
   phdr *phdrItems;
   pbag *pbagItems;
   pmod *pmodItems;
@@ -128,9 +115,9 @@ struct Hydra
   void readFrom(juce::InputStream *file, juce::int64 pdtaChunkEnd);
   bool isComplete();
 };
-}
-}
+}  // namespace SF2
+}  // namespace sfzero
 
 #undef SF2Field
 
-#endif // SF2_H_INCLUDED
+#endif  // SF2_H_INCLUDED

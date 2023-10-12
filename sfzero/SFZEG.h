@@ -2,23 +2,23 @@
  * Original code copyright (C) 2012 Steve Folta
  * Converted to Juce module (C) 2016 Leo Olivers
  * Forked from https://github.com/stevefolta/SFZero
- * For license info please see the LICENSE file distributed with this source code
+ * For license info please see the LICENSE file distributed with this source
+ *code
  *************************************************************************************/
 #ifndef SFZEG_H_INCLUDED
 #define SFZEG_H_INCLUDED
 
 #include "SFZRegion.h"
 
-namespace sfzero
-{
-class EG
-{
-public:
+namespace sfzero {
+class EG {
+ public:
   EG();
   virtual ~EG() {}
 
   void setExponentialDecay(bool newExponentialDecay);
-  void startNote(const EGParameters *parameters, float floatVelocity, double sampleRate, const EGParameters *velMod = nullptr);
+  void startNote(const EGParameters *parameters, float floatVelocity,
+                 double sampleRate, const EGParameters *velMod = nullptr);
   void nextSegment();
   void noteOff();
   void fastRelease();
@@ -34,17 +34,8 @@ public:
   bool getSegmentIsExponential() const { return segmentIsExponential_; }
   void setSegmentIsExponential(bool v) { segmentIsExponential_ = v; }
 
-private:
-  enum Segment
-  {
-    Delay,
-    Attack,
-    Hold,
-    Decay,
-    Sustain,
-    Release,
-    Done
-  };
+ private:
+  enum Segment { Delay, Attack, Hold, Decay, Sustain, Release, Done };
 
   void startDelay();
   void startAttack();
@@ -64,6 +55,6 @@ private:
   static const float BottomLevel;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(EG)
 };
-}
+}  // namespace sfzero
 
-#endif // SFZEG_H_INCLUDED
+#endif  // SFZEG_H_INCLUDED

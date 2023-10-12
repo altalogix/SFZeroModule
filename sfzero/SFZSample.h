@@ -2,21 +2,31 @@
  * Original code copyright (C) 2012 Steve Folta
  * Converted to Juce module (C) 2016 Leo Olivers
  * Forked from https://github.com/stevefolta/SFZero
- * For license info please see the LICENSE file distributed with this source code
+ * For license info please see the LICENSE file distributed with this source
+ *code
  *************************************************************************************/
 #ifndef SFZSAMPLE_H_INCLUDED
 #define SFZSAMPLE_H_INCLUDED
 
 #include "SFZCommon.h"
 
-namespace sfzero
-{
+namespace sfzero {
 
-class Sample
-{
-public:
-  explicit Sample(const juce::File &fileIn) : file_(fileIn), buffer_(nullptr), sampleRate_(0), sampleLength_(0), loopStart_(0), loopEnd_(0) {}
-  explicit Sample(double sampleRateIn) : buffer_(nullptr), sampleRate_(sampleRateIn), sampleLength_(0), loopStart_(0), loopEnd_(0) {}
+class Sample {
+ public:
+  explicit Sample(const juce::File &fileIn)
+      : file_(fileIn),
+        buffer_(nullptr),
+        sampleRate_(0),
+        sampleLength_(0),
+        loopStart_(0),
+        loopEnd_(0) {}
+  explicit Sample(double sampleRateIn)
+      : buffer_(nullptr),
+        sampleRate_(sampleRateIn),
+        sampleLength_(0),
+        loopStart_(0),
+        loopEnd_(0) {}
   virtual ~Sample();
 
   bool load(juce::AudioFormatManager *formatManager);
@@ -37,7 +47,7 @@ public:
 
 #endif
 
-private:
+ private:
   juce::File file_;
   juce::AudioSampleBuffer *buffer_;
   double sampleRate_;
@@ -45,6 +55,6 @@ private:
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Sample)
 };
-}
+}  // namespace sfzero
 
-#endif // SFZSAMPLE_H_INCLUDED
+#endif  // SFZSAMPLE_H_INCLUDED
